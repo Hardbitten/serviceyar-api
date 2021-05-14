@@ -1,11 +1,8 @@
 import express from "express";
-import {login} from "../controllers/Auth/authentication"
+import { login } from "../controllers/Auth/authentication";
 var router = express.Router();
 
-router.post("/user/register" , login)
-
-router.get("/", (req, res, next) => {
-  return Response.bind(res)();
-});
+router.post("/user/login", login);
+router.put("/user/register", Authentication, register);
 
 module.exports = router;
