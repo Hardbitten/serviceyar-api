@@ -11,11 +11,10 @@ const signToken = (id) => {
 };
 export const login = async (req, res, next) => {
   let token;
-  console.log(req.body);
   // Create User
   try {
     const user = await User.findOne({
-      number: req.body.number,
+      mobileNumber: req.body.mobileNumber,
     });
     if (!user) {
       const newUser = await User.create(req.body);
@@ -24,6 +23,7 @@ export const login = async (req, res, next) => {
         statusCode: 201,
         data: {
           token,
+          isRegistred: false,
           user: newUser,
         },
         devMsg: "success",
@@ -33,6 +33,7 @@ export const login = async (req, res, next) => {
       responser.bind(res)({
         statusCode: 201,
         data: {
+          isRegistred: true,
           token,
           user,
         },
@@ -42,14 +43,28 @@ export const login = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
+};
 
-  // Create jwt
-  // const token = signToken(newUser._id);
-  // responser.bind(res)({
-  //     statusCode: 201,
-  //     data: {
-  //       token
-  //     },
-  //     devMsg : "success" ,
-  //   });
+export const register = async (req, res, next) => {
+  try {
+    const { firstName, lastName } = req.body;
+    const result = await User.findByIdAndUpdate(
+      req.userId,
+      { firstName, lastName },
+      {
+        new: true,
+        runValidator: true,
+        useFindAndModify: true,
+      }
+    );
+    responser.bind(res)({
+      statusCode: 201,
+      data: {
+        user: result,
+      },
+      devMsg: "success",
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
