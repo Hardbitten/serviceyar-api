@@ -1,8 +1,8 @@
 import express from "express";
-import {signup} from "../controllers/Auth/authentication"
+import {login} from "../controllers/Auth/authentication"
 var router = express.Router();
 
-router.post("/user/register" , signup)
+router.post("/user/register" , login)
 
 router.get("/", (req, res, next) => {
   return Response.bind(res)();

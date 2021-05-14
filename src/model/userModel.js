@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        //required: [true, 'Please provide your email'],
+        required: [true, 'Please provide your email'],
         unique: true,
         lowercase: true,
         validate: [validator.isEmail, 'لطفا ایمیل خود را به درستی وارد نمایید']
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     driver : {
         type: mongoose.Schema.ObjectId , 
         ref: "Driver" , 
-        //required: true
+        required: true
     },
     role: {
         type: String,
@@ -31,13 +31,13 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        //required: [true, 'لطفا رمز عبور خود را وارد کنید'],
+        required: [true, 'لطفا رمز عبور خود را وارد کنید'],
         minlength: 4,
         select: false
     },
     passwordConfirm: {
         type: String,
-        //required: [true, 'لطفا رمز عبور خود را تایید کنید'],
+        required: [true, 'لطفا رمز عبور خود را تایید کنید'],
         validate: {
             // This only works on CREATE and SAVE!!!
             validator: function (el) {
@@ -51,4 +51,4 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User" , userSchema);
 
-module.exports = User;
+export default User;
