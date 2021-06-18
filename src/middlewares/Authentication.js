@@ -1,7 +1,9 @@
 import { decode } from "jsonwebtoken";
 import User from "../model/userModel";
+import Driver from "../model/driverModel";
 import Resp from "../scripts/Responser";
-import { log } from "../scripts/loger";
+import { isEmpty } from "../scripts/Utility";
+
 const Authentication = async (req, res, next) => {
   if (req.headers["authorization"] !== undefined) {
     /* decode Token And Get User [id] */
@@ -36,13 +38,24 @@ const Authentication = async (req, res, next) => {
 
 const ValidateSocket = async (socket, next) => {
   try {
+    const type = socket?.handshake?.query?.token;
     const token = socket?.handshake?.query?.token;
     let decoded = decode(token, process.env.TOKEN_KEY);
-    if (decoded) {
+
+    if (isEmpty(type)) return;
+    if (isEmpty(decoded)) return;
+
+    if (type === "user") {
       const user = await User.findById(decoded?.id);
       socket.user = user;
+      socket.type = "user";
       next();
-    }
+    } else if (type === "driver") {
+      const driver = await Driver.findById(decoded?.id);
+      socket.driver = driver;
+      socket.type = "driver";
+      next();
+    } else return;
   } catch (err) {
     console.log("this is from ValidateSocket TryCatch Err", err);
     return;

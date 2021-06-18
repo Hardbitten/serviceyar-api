@@ -1,59 +1,35 @@
 import User from "../../model/userModel";
 
+const userSockets = new Map();
+
 const SocketService = (socket) => {
-  console.log("someone connected");
-  // // let use = {};
-  // let token = socket.handshake.query.token
-  // const latlng = Data.location
-  // const [lng, lat] = latlng.split(',')
-  // const unit = Data.unit
-  // const distance = Data.distance
-  // const Multiplier = unit === "km" ? 0.001 : 1
-  // const radius = unit == "km" ? distance / 6378.1 : distance / 1
-  // const user = await User.findOne({
-  //   userName: "mohamad"
-  // })
-  // const distances = await User.aggregate([
+  if (socket.type === "user") {
+    //user
+    console.log("user connected");
 
-  //   {
-  //     $geoNear: {
-  //       near: {
-  //         type: 'Point',
-  //         coordinates: [lng * 1, lat * 1]
-  //       },
-  //       spherical: true,
-  //       distanceField: "distance",
-  //       distanceMultiplier: Multiplier
-  //     }
-  //   },
-  //   {
-  //     $project: {
-  //       distance: 1,
-  //       userName: 1,
-  //       _id: 0
-  //     }
-  //   }
+    userSockets.set(socket.user.id, socket);
+    socket.on("disconnected", (socket) => {
+      console.log("user disconnected");
+    });
 
-  // ])
-  // console.log(distances);
-  // const users = await User.find({
-  //   location: {
-  //     loc: {
-  //       $geoWithin: {
-  //         $centerSphere: [
-  //           [-88, 30], 10 / 3963.2
-  //         ]
-  //       }
-  //     }
-  //   }
+    //########
+  } else if (socket.type === "driver") {
+    //driver
+    console.log("driver connected");
 
-  // })
-  // console.log(users);
-  // socket.emit("sendResponse", distances)
-
-  socket.on("disconnected", (socket) => {
-    console.log("someone disconnected");
-  });
+    socket.on("onDriverLocationChange", async (data) => {
+      const users = await User.find({ driver: socket.driver.id });
+      for (const user of users) {
+        const userSocket = userSockets.get(user._id);
+        if (userSocket) {
+          userSocket.emit("sendDriverLocation", {});
+        }
+      }
+    });
+    socket.on("disconnected", (socket) => {
+      console.log("driver disconnected");
+    });
+  }
 };
 
 export default SocketService;
