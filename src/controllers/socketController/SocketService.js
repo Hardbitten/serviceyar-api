@@ -1,4 +1,4 @@
-import User from "../../model/userModel"
+import User from "../../model/userModel";
 
 const SocketService = (socket) => {
   console.log("someone connected");
@@ -50,7 +50,6 @@ const SocketService = (socket) => {
   // })
   // console.log(users);
   // socket.emit("sendResponse", distances)
-
 
   socket.on("disconnected", (socket) => {
     console.log("someone disconnected");
