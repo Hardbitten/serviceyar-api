@@ -1,6 +1,6 @@
-import User from "../../model/userModel";
 import jwt from "jsonwebtoken";
 import responser from "../../scripts/Responser";
+import Driver from "../../model/driverModel";
 const signToken = (id) => {
   return jwt.sign(
     {
@@ -11,45 +11,45 @@ const signToken = (id) => {
 };
 export const login = async (req, res, next) => {
   let token;
-  // Create User
+  // Create Driver
   try {
-    const user = await User.findOne({
+    const driver = await Driver.findOne({
       mobileNumber: req.body.mobileNumber,
     });
-    if (!user) {
-      const newUser = await User.create(req.body);
-      token = signToken(newUser._id);
+    if (!driver) {
+      const newDriver = await Driver.create(req.body);
+      token = signToken(newDriver._id);
       responser.bind(res)({
         statusCode: 201,
         data: {
           token,
           isRegistred: false,
-          user: newUser,
+          driver: newDriver,
         },
         devMsg: "success",
       });
     } else {
-      token = signToken(user._id);
+      token = signToken(driver._id);
       responser.bind(res)({
         statusCode: 201,
         data: {
           isRegistred: true,
           token,
-          user,
+          driver,
         },
         devMsg: "success",
       });
     }
   } catch (err) {
-    console.log("THIS IS FROM LOGIN HANDDLER" , err);
+    console.log("THIS IS FROM LOGIN HANDDLER", err);
   }
 };
 
 export const register = async (req, res, next) => {
   try {
     const { firstName, lastName } = req.body;
-    const result = await User.updateOne(
-      {_id : req.userId},
+    const driver = await Driver.updateOne(
+      { _id: req.driverId },
       { firstName, lastName },
       {
         new: true,
@@ -60,7 +60,7 @@ export const register = async (req, res, next) => {
     responser.bind(res)({
       statusCode: 201,
       data: {
-        user: result,
+        driver,
       },
       devMsg: "success",
     });

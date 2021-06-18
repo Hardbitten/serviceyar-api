@@ -1,9 +1,9 @@
 import express from "express";
-import { login, register } from "../controllers/Auth/authentication";
-import { Authentication } from "../middlewares/Authentication";
+import { login, register } from "../controllers/Auth/driverAuthentication";
+import { driverAuthentication } from "../middlewares/Authentication";
 var router = express.Router();
 
-router.post("/drivers/login", login);
-router.post("/drivers/register", Authentication, register);
+router.post("/login", login);
+router.post("/register", driverAuthentication, register);
 
 module.exports = router;

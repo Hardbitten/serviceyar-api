@@ -19,10 +19,11 @@ const SocketService = (socket) => {
 
     socket.on("onDriverLocationChange", async (data) => {
       const users = await User.find({ driverId: socket.driver.id });
-      for (const user of users) {
-        const userSocket = userSockets.get(user._id);
+      let usersKey = [...userSockets.entries()].map(([k]) => k);
+      for (const user of usersKey) {
+        const userSocket = userSockets.get(user);
         if (userSocket) {
-          userSocket.emit("sendDriverLocation", {});
+          userSocket.emit("onDriverLocationChange", data);
         }
       }
     });
