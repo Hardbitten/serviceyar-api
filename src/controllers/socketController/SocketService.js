@@ -18,7 +18,7 @@ const SocketService = (socket) => {
     console.log("driver connected");
 
     socket.on("onDriverLocationChange", async (data) => {
-      const users = await User.find({ driver: socket.driver.id });
+      const users = await User.find({ driverId: socket.driver.id });
       for (const user of users) {
         const userSocket = userSockets.get(user._id);
         if (userSocket) {

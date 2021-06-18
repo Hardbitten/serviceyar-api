@@ -38,10 +38,9 @@ const Authentication = async (req, res, next) => {
 
 const ValidateSocket = async (socket, next) => {
   try {
-    const type = socket?.handshake?.query?.token;
+    const type = socket?.handshake?.query?.type;
     const token = socket?.handshake?.query?.token;
     let decoded = decode(token, process.env.TOKEN_KEY);
-
     if (isEmpty(type)) return;
     if (isEmpty(decoded)) return;
 
@@ -52,6 +51,7 @@ const ValidateSocket = async (socket, next) => {
       next();
     } else if (type === "driver") {
       const driver = await Driver.findById(decoded?.id);
+      console.log(driver);
       socket.driver = driver;
       socket.type = "driver";
       next();

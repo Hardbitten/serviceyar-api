@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: [true, "شماره همراه خود را وارد نمایید"],
   },
-  driver: {
+  driverId: {
     type: mongoose.Schema.ObjectId,
     ref: "Driver",
     //required: true
