@@ -1,9 +1,8 @@
-import express from "express";
-import { login, register } from "../controllers/Auth/authentication";
-import { Authentication } from "../middlewares/Authentication";
-var router = express.Router();
+import {Router} from "express"
 
-router.post("/users/login", login);
-router.post("/users/register", Authentication, register);
+const routes = Router()
 
-module.exports = router;
+routes.use("/users" ,require("./users"))
+routes.use("/drivers" ,require("./driver"))
+
+module.exports =  routes
