@@ -1,7 +1,11 @@
-import { decode } from "jsonwebtoken";
-import { isEmpty } from "../scripts/Utility";
+import {
+  decode
+} from "jsonwebtoken";
+import User from "../model/userModel"
 import Resp from "../scripts/Responser";
-import User from "../model/userModel";
+import {
+  log
+} from "../scripts/loger";
 const Authentication = async (req, res, next) => {
   if (req.headers["authorization"] !== undefined) {
     /* decode Token And Get User [id] */
@@ -34,10 +38,20 @@ const Authentication = async (req, res, next) => {
     });
 };
 
-const ValidateSocket = (socket, next) => {
-  const handshake = socket.handshake;
-  //console.log(handshake);
-  next();
-};
+const ValidateSocket = async (socket, next) => {
+  try {
+    const token = socket?.handshake?.query?.token;
+    let decoded = decode(token, process.env.TOKEN_KEY);
+    const user = await User.findById(decoded.id);
+    socket.user = user._doc;
+    next();
+  } catch (err) {
+    console.log("this is from ValidateSocket TryCatch Err" , err);
+    return ;
+  }
+}
 
-export { Authentication, ValidateSocket };
+export {
+  Authentication,
+  ValidateSocket
+};

@@ -41,15 +41,15 @@ export const login = async (req, res, next) => {
       });
     }
   } catch (err) {
-    console.log(err);
+    console.log("THIS IS FROM LOGIN HANDDLER" , err);
   }
 };
 
 export const register = async (req, res, next) => {
   try {
     const { firstName, lastName } = req.body;
-    const result = await User.findByIdAndUpdate(
-      req.userId,
+    const result = await User.updateOne(
+      {_id : req.userId},
       { firstName, lastName },
       {
         new: true,

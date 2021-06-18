@@ -11,7 +11,7 @@ import httpErrors from "http-errors";
 import Resp from "./src/scripts/Responser";
 import { ValidateSocket } from "./src/middlewares/Authentication";
 import SocketService from "./src/controllers/socketController/SocketService";
-import Db from "./database"
+import Db from "./src/config/database"
 //import insertMochData from "./src/Scripts/MochData";
 /**
  * Module dependencies.
