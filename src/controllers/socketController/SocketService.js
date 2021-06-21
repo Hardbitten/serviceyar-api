@@ -9,7 +9,8 @@ const SocketService = (socket) => {
       console.log("user connected");
 
       userSockets.set(socket.user.id, socket);
-      socket.on("disconnected", (socket) => {
+      console.log("socket.user.id", socket.user.id);
+      socket.on("disconnect", (socket) => {
         console.log("user disconnected");
       });
 
@@ -19,25 +20,29 @@ const SocketService = (socket) => {
       console.log("driver connected");
 
       socket.on("onDriverLocationChange", async (data) => {
+        console.log("data", data);
         const users = await User.find({
-          driverId: socket.driver.id
+          driverId: socket.driver.id,
         });
-        let usersKey = [...userSockets.entries()].map(([k]) => k);
 
-        for (const user of usersKey) {
-          const userSocket = userSockets.get(user);
+        for (const user of users) {
+          let entries = [...userSockets.entries()].map(([k]) => {
+            if (k === user.id) return k;
+          });
+          const userKey = entries.filter((item) => item !== undefined)[0];
+          const userSocket = userSockets.get(userKey);
           if (userSocket) {
             userSocket.emit("onDriverLocationChange", data);
           }
         }
       });
-      socket.on("disconnected", (socket) => {
+      socket.on("disconnect", (socket) => {
         console.log("driver disconnected");
       });
     }
   } catch (err) {
     console.log("THIS IS FROM SOCKETSERVICE HANDDLER CATCH ERR", err);
-    return ;
+    return;
   }
 };
 

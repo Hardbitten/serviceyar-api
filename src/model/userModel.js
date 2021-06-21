@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
   driverId: {
     type: mongoose.Schema.ObjectId,
     ref: "Driver",
+    default: null,
     //required: true
   },
   role: {
